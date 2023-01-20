@@ -13,6 +13,25 @@ router.get("/", async (req, res, next) => {
     }
 });
 
+router.get("/compContracts", async (req, res, next) => {
+    try {
+        console.log(req.headers);
+        const contracts = await Contract.findAll({
+            attributes: ['date'],
+            where: {
+                date: req.headers.dateinfo || null,
+                status: false,
+            },
+            include:{ 
+                model: User,  attributes: ["email"] 
+            },
+        });
+        res.json(contracts);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.get("/:contractId", async (req, res, next) => {
     try {
         const contract = await Contract.findByPk(req.params.contractId, {
@@ -24,39 +43,31 @@ router.get("/:contractId", async (req, res, next) => {
     }
 });
 
-router.get("competingContracts", async (req, res, next)=>{
-    try{
-
-    }catch(err){
-        next(err)
+router.post("/", async (req, res, next) => {
+    try {
+        res.status(201).send(await Contract.create(req.body));
+    } catch (err) {
+        next(err);
     }
-})
+});
 
-router.post('/', async (req, res, next)=>{
-    try{
-        res.status(201).send(await Contract.create(req.body))
-    }catch(err){
-         next(err)
+router.put("/:contractId", async (req, res, next) => {
+    try {
+        const contract = await Contract.findByPk(req.params.contractId);
+        res.send(await contract.update(req.body));
+    } catch (err) {
+        next(err);
     }
-})
+});
 
-router.put('/:contractId', async (req, res, next)=>{
-    try{
-        const contract = await Contract.findByPk(req.params.contractId)
-        res.send(await contract.update(req.body))
-    }catch (err){
-        next(err)
+router.delete("/:campusId", async (req, res, next) => {
+    try {
+        const contract = await Contract.findByPk(req.params.campusId);
+        contract.destroy();
+        res.send(contract);
+    } catch (err) {
+        next(err);
     }
-})
+});
 
-router.delete("/:campusId", async (req, res, next) =>{
-    try{
-        const contract = await Contract.findByPk(req.params.campusId)
-        contract.destroy()
-        res.send(contract)
-    }catch (err){
-        next(err)
-    }
-})
-
-module.exports = router
+module.exports = router;

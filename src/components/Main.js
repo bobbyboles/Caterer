@@ -17,6 +17,7 @@ const Main = () => {
     const [tableArrangement, setTableArrangement] = useState("Board Room");
     const [total, setTotal] = useState(0);
     const [submitted, setSubmitted] = useState(false);
+    const [competingEmails, setCompetingEmails] = useState([])
 
     const form = useRef();
 
@@ -33,14 +34,27 @@ const Main = () => {
         return acc;
     }, []);
 
-
-
     const [value, onChange] = useState(new Date());
+    
+    useEffect(() => {
+        async function fetchCompetingContracts(value) {
+            const { data } = await axios.get("/api/contracts/compContracts", {headers:{ dateInfo: value.toDateString() }} );
+            setCompetingEmails(data);
+        }
+        fetchCompetingContracts(value);
+    }, [value]);
+    console.log("THIS IS COMPETING EMAILS FROM DATABSE", competingEmails)
+
+    const emails = competingEmails.reduce((acc,{date, user:{email}})=>{
+        acc = [...acc, {email, date}]
+       return acc
+    },[])
+    
+    console.log("this is just emails from back end", emails)
 
     const nonCompleteContracts = contracts.reduce(
         (acc, { date, status, user: { email } }) => {
             if (!status && date == value.toDateString()) {
-                console.log('fired')
                 const obj = { email };
                 acc = [...acc, obj];
             }
@@ -49,7 +63,7 @@ const Main = () => {
         []
     );
     
-    console.log(nonCompleteContracts);
+    console.log("This is competingEmails from front end reducer", nonCompleteContracts);
 
     const handleSumbit = (e) => {
         e.preventDefault();
