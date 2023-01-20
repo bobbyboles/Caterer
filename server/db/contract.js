@@ -3,7 +3,7 @@ const db = require("./db");
 
 const Contract = db.define("contract", {
     date: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false,
     },
     guestCount: {

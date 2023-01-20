@@ -24,6 +24,14 @@ router.get("/:contractId", async (req, res, next) => {
     }
 });
 
+router.get("competingContracts", async (req, res, next)=>{
+    try{
+
+    }catch(err){
+        next(err)
+    }
+})
+
 router.post('/', async (req, res, next)=>{
     try{
         res.status(201).send(await Contract.create(req.body))

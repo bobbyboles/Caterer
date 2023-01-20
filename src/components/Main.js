@@ -1,12 +1,11 @@
-import React, { useState , useRef} from "react";
+import React, { useState, useRef } from "react";
 import Calendar from "react-calendar";
 import { useEffect } from "react";
 import axios from "axios";
 import MyDocument from "./MyDocument";
 import ReactPDF from "@react-pdf/renderer";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import emailjs from "@emailjs/browser"
-
+import emailjs from "@emailjs/browser";
 
 const Main = () => {
     const [contracts, setContracts] = useState([]);
@@ -19,7 +18,7 @@ const Main = () => {
     const [total, setTotal] = useState(0);
     const [submitted, setSubmitted] = useState(false);
 
-    const form = useRef()
+    const form = useRef();
 
     useEffect(() => {
         async function fetchContracts() {
@@ -34,13 +33,34 @@ const Main = () => {
         return acc;
     }, []);
 
+
+
     const [value, onChange] = useState(new Date());
+
+    const nonCompleteContracts = contracts.reduce(
+        (acc, { date, status, user: { email } }) => {
+            if (!status && date == value.toDateString()) {
+                console.log('fired')
+                const obj = { email };
+                acc = [...acc, obj];
+            }
+            return acc;
+        },
+        []
+    );
+    
+    console.log(nonCompleteContracts);
 
     const handleSumbit = (e) => {
         e.preventDefault();
         console.log("Submitted");
         setSubmitted(!submitted);
-        emailjs.sendForm('service_h5duvsb', 'template_2wvfu4m', form.current, 'xAVyPmuZpVsGtknIu')
+        emailjs.sendForm(
+            "service_h5duvsb",
+            "template_2wvfu4m",
+            form.current,
+            "xAVyPmuZpVsGtknIu"
+        );
     };
 
     return (
@@ -61,8 +81,12 @@ const Main = () => {
                     )
                 }
             />
-            <form ref={form}className="form" id="userContract" onSubmit={handleSumbit}>
-
+            <form
+                ref={form}
+                className="form"
+                id="userContract"
+                onSubmit={handleSumbit}
+            >
                 <label htmlFor="firstName">First Name:</label>
                 <input
                     name="firstName"
@@ -110,7 +134,14 @@ const Main = () => {
                     <option>Seperate Tables</option>
                 </select>
                 <label htmlFor="totalPrice">Total Price:</label>
-                <input name="totalPrice" value={total}></input>
+                <input
+                    name="totalPrice"
+                    value={total}
+                    onChange={(e) => {
+                        setTotal(e.currentTarget.value);
+                    }}
+                ></input>
+
                 <button
                     onClick={(e) => {
                         e.preventDefault();

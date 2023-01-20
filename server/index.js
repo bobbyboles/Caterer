@@ -33,37 +33,45 @@ const syncAndSeed = async () => {
         passWord: 'cDallas',
     }) 
     await Contract.create({
-        date: new Date(),
+        date: new Date().toDateString(),
         guestCount: 20,
         package: 'King',
         layout: 'BoardRoom',
         totalPrice: 100.00,
-        status: true
-    })
-    await Contract.create({
-        date: new Date('Fri Dec 23 2022'),
-        guestCount: 23,
-        package: 'Jack',
-        layout: 'BoardRoom',
-        totalPrice: 100.00,
-        status: true
-    })
-    await Contract.create({
-        date: new Date('Thu Dec 22 2022'),
-        guestCount: 15,
-        package: 'Queen',
-        layout: 'SeperateTables',
-        totalPrice: 3000.00,
         status: false
     })
+    await Contract.create({
+        date: new Date().toDateString(),
+        guestCount: 20,
+        package: 'King',
+        layout: 'BoardRoom',
+        totalPrice: 100.00,
+        status: false
+    })
+    // await Contract.create({
+    //     date: new Date('Fri Dec 23 2022'),
+    //     guestCount: 23,
+    //     package: 'Jack',
+    //     layout: 'BoardRoom',
+    //     totalPrice: 100.00,
+    //     status: true
+    // })
+    // await Contract.create({
+    //     date: new Date('Thu Dec 22 2022'),
+    //     guestCount: 15,
+    //     package: 'Queen',
+    //     layout: 'SeperateTables',
+    //     totalPrice: 3000.00,
+    //     status: false
+    // })
     
     const bob = await User.findByPk(2)
+    const corbin = await User.findByPk(3)
     const dinner = await Contract.findByPk(1)
+    const corbinDinner = await Contract.findByPk(2)
     
     bob.addContract(dinner)
-    // console.log(bob)
-    // console.log(dinner)
-    // consol.log(Object.keys(User.__proto__))
+    corbin.addContract(corbinDinner)
 
 }
 
